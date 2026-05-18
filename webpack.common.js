@@ -1,6 +1,8 @@
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { GenerateSW } = require("workbox-webpack-plugin");
+const { InjectManifest } = require("workbox-webpack-plugin");
 
 module.exports = {
   target: "web",
@@ -43,6 +45,13 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
       chunkFilename: "[id].css",
+    }),
+    new GenerateSW({
+      // опции конфигурации
+    }),
+    new InjectManifest({
+      swSrc: "../src/service-worker.js", // исходный файл сервис-воркера
+      swDest: "service-worker.js", // целевая имя файла
     }),
   ],
 };
