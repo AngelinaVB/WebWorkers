@@ -2,7 +2,6 @@ const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { GenerateSW } = require("workbox-webpack-plugin");
-const { InjectManifest } = require("workbox-webpack-plugin");
 
 module.exports = {
   target: "web",
@@ -47,11 +46,21 @@ module.exports = {
       chunkFilename: "[id].css",
     }),
     new GenerateSW({
-      // опции конфигурации
-    }),
-    new InjectManifest({
-      swSrc: "../src/service-worker.js", // исходный файл сервис-воркера
-      swDest: "service-worker.js", // целевая имя файла
+      clientsClaim: true,
+      skipWaiting: true,
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/ahj-12-1\.sergem\.xyz\/news/,
+          handler: "NetworkFirst",
+          options: {
+            cacheName: "news-cache",
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24, // 1 день
+            },
+          },
+        },
+      ],
     }),
   ],
 };
